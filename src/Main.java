@@ -4,12 +4,38 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        System.out.print(statistics("src/file.txt"));
+        System.out.print(getStatistics("src/file.txt"));
     }
 
-    public static Map<String, Integer> statistics(String filename) throws FileNotFoundException {
-        Scanner sc = new Scanner(new File(filename));
+    public static List<Statistics> countFinalScore(List<Statistics> people){
+        for (Statistics person : people) {  // Вычисление итогового балла отдельно для каждого задания
+            if (5 <= person.attempt && person.attempt <= 10) {
+                person.finalScore = person.score / 2;
+            } else if (person.attempt > 10) {
+                person.finalScore = 1;
+            } else {
+                person.finalScore = person.score;
+            }
+        }
+        return people;
+    }
+
+    public static Map<String, Integer> createMap(List<Statistics> people){
+        // Составление мапы
         Map<String, Integer> res = new HashMap<>();
+
+        for (Statistics person : people) {
+            if (res.containsKey(person.surname)) {
+                res.put(person.surname, res.get(person.surname) + person.finalScore);
+            } else {
+                res.put(person.surname, person.finalScore);
+            }
+        }
+        return res;
+    }
+
+    public static List<Statistics> fromFileToList(String filename) throws FileNotFoundException {
+        Scanner sc = new Scanner(new File(filename));
         List<Statistics> people = new ArrayList<>();
 
         while (sc.hasNextLine()) {
@@ -31,25 +57,11 @@ public class Main {
                 people.add(personFromFile);  // Добавляем нового человека в список
             }
         }
+        return people;
+    }
 
-        for (Statistics person : people) {  // Вычисление итогового балла
-            if (5 <= person.attempt && person.attempt <= 10) {
-                person.finalScore = person.score / 2;
-            } else if (person.attempt > 10) {
-                person.finalScore = 1;
-            } else {
-                person.finalScore = person.score;
-            }
-        }
-
-        // Составление мапы
-        for (Statistics person : people) {  // Вычисление итогового балла
-            if (res.containsKey(person.surname)) {
-                res.put(person.surname, res.get(person.surname) + person.finalScore);
-            } else {
-                res.put(person.surname, person.finalScore);
-            }
-        }
-        return res;
+    public static Map<String, Integer> getStatistics(String filename) throws FileNotFoundException {
+        List<Statistics> people = fromFileToList(filename);
+        return createMap(countFinalScore(people));
     }
 }
