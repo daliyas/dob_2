@@ -16,6 +16,7 @@ public class MainTest {
         expectations.put("s", 10);
         expectations.put("Safina", 31);
 
+
         Assertions.assertEquals(result, expectations);
     }
 
@@ -47,7 +48,22 @@ public class MainTest {
         expectations.add(new Statistics("Safina", 2, 9, 23));
         expectations.add(new Statistics("s", 2, 1, 3));
 
-        Assertions.assertNotEquals(result.get(1), expectations.get(1));
+        Assertions.assertEquals(result, expectations);
+    }
 
+    @Test
+    public void countFinalScoreTest() throws FileNotFoundException{
+        List<Statistics> result = new ArrayList<>();
+        List<Statistics> expectations = new ArrayList<>();
+
+        expectations.add(new Statistics("s", 1, 7, 15, 7));
+        expectations.add(new Statistics("s1", 1, 11, 100, 1));
+        result.add(new Statistics("s", 1, 7, 15));
+        result.add(new Statistics("s1", 1, 11, 100));
+
+
+        Main.countFinalScore(result);
+
+        Assertions.assertEquals(result, expectations);
     }
 }
